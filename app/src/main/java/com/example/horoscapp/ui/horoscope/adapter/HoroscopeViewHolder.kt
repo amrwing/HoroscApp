@@ -16,7 +16,7 @@ class HoroscopeViewHolder(view:View) : RecyclerView.ViewHolder(view) {
 
         binding.parent.setOnClickListener {
             startRotationAnimation(binding.ivHoroscope, newLambda = {onItemSelected(horoscopeInfo)})
-            //onItemSelected(horoscopeInfo)
+            //onItemSelected(horoscopeInfo)//
         }
     }
 
