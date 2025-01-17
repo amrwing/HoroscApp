@@ -2,6 +2,7 @@ package com.example.horoscapp.ui.luck
 
 import android.animation.Animator
 import android.animation.ObjectAnimator
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,14 +17,18 @@ import androidx.core.animation.doOnEnd
 import androidx.core.view.isVisible
 import com.example.horoscapp.R
 import com.example.horoscapp.databinding.FragmentLuckBinding
+import com.example.horoscapp.ui.providers.RandomCardProvider
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Random
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LuckFragment : Fragment() {
 
     private var _binding:FragmentLuckBinding? = null
     private val binding get() = _binding!!
+    @Inject
+    lateinit var randomCardProvider: RandomCardProvider
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,7 +43,31 @@ class LuckFragment : Fragment() {
     }
 
     private fun initUI() {
+        preparePrediction()
         initListeners()
+    }
+
+    private fun preparePrediction() {
+        val luck = randomCardProvider.getLucky()
+        luck?.let {
+            cluck->
+            binding.tvLucky.text = getString(cluck.text)
+            binding.ivLuckyCard.setImageResource(cluck.image)
+            binding.tvShare.setOnClickListener {
+                shareResult(getString(cluck.text))
+            }
+        }
+    }
+
+    private fun shareResult(string: String) {
+val sendIntent:Intent = Intent().apply {
+    action = Intent.ACTION_SEND
+    putExtra(Intent.EXTRA_TEXT, string)
+    type = "text/plain"
+}
+        val shareIntent = Intent.createChooser(sendIntent,null)
+        startActivity(shareIntent)
+
     }
 
     private fun initListeners() {
